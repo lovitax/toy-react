@@ -30,7 +30,7 @@ export class Component {
         this.children.push(component);
     }
 
-    get root() { // TODO:
+    get root() {
         // console.log(this._root);
         if (!this._root) {
             this._root = this.render().root;

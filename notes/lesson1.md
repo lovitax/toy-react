@@ -44,3 +44,7 @@ children的处理稍微复杂一些，首先作为数组处理（参数用...操
 然后封装三个类，主要对应第一个参数type，string的情况对应实dom，标识符对应Component。然后将dom节点封装到类里面，然后处理props和children。
 
 creareElement也是三个步骤不变，创建节点，改为实例化wrapper，处理属性不变，添加children注意数组的情况（this.children）即可。
+
+## 问题--深入学习
+
+class 的getter
