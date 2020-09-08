@@ -1,5 +1,3 @@
-
-
 class ElementWrapper {
     constructor(type) {
         this.root = document.createElement(type);
@@ -52,10 +50,9 @@ export function createElement(type, attributes, ...children) {
     }
 
     for (const p in attributes) {
-        if (attributes.hasOwnProperty(p)) {
-            // const element = attributes[p];
-            e.setAttribute(p, attributes[p]);
-        }
+        // if (attributes.hasOwnProperty(p)) {
+        e.setAttribute(p, attributes[p]);
+        // }
     }
 
     let insertChildren = (children) => {
