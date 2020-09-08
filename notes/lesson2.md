@@ -5,3 +5,5 @@
 事件绑定，只处理标签上的属性，组件上的怎么办？不管了么
 
 range API
+
+renderToDom
