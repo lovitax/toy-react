@@ -1,23 +1,54 @@
 
 
 class ElementWrapper {
-    constructor(type) {}
-    setAttribute(name, value) {}
-    appendChild() {}
+    constructor(type) {
+        this.root = document.createElement(type);
+    }
+    setAttribute(name, value) {
+        this.root.setAttribute(name, value);
+    }
+    appendChild(component) {
+        this.root.appendChild(component.root);
+    }
 }
 
 class TextWrapper {
-    constructor() {}
+    constructor(content) {
+        this.root = document.createTextNode(content);
+    }
     // appendChild() {}
+}
+
+export class Component {
+    constructor(type) {
+        this.props = Object.create(null);
+        this.children = [];
+        this._root = null;
+    }
+    setAttribute(name, value) {
+        this.props[name] = value;
+    }
+    appendChild(component) {
+        this.children.push(component);
+    }
+
+    get root() { // TODO:
+        // console.log(this._root);
+        if (!this._root) {
+            this._root = this.render().root;
+        }
+        // console.log(this._root);
+        return this._root;
+    }
 }
 
 export function createElement(type, attributes, ...children) {
     let e;
     if (typeof type === 'string') {
-        const e = document.createElement(type);
+        e = new ElementWrapper(type);
     }
     else {
-
+        e = new type;
     }
 
     for (const p in attributes) {
@@ -27,23 +58,23 @@ export function createElement(type, attributes, ...children) {
         }
     }
 
-    for (let child of children) {
-        if (typeof child === 'string') {
-            child = document.createTextNode(child);
+    let insertChildren = (children) => {
+        for (let child of children) {
+            if (typeof child === 'string') {
+                child = new TextWrapper(child);
+            }
+            if (typeof child === 'object' && child instanceof Array) {
+                insertChildren(child);
+            }
+            else {
+                e.appendChild(child);
+            }
         }
-        e.appendChild(child);
     }
+    insertChildren(children);
     return e;
 }
 
-export function render() {
-
-}
-
-export class Component {
-    constructor(type) {
-        this.props = Object.create(null);
-    }
-    setAttribute(name, value) {}
-    appendChild() {}
+export function render(component, parentNode) {
+    parentNode.appendChild(component.root);
 }
