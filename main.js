@@ -13,7 +13,13 @@ class MyComponent extends Component {
         return <div>
             <h1>My Comp </h1>
             {this.state.a.toString()} {/* 这里要是不toString就会有问题，因为render 其实只处理了数组和字符串*/}
-            {this.children}
+            <button onclick={
+                () => {
+                    this.state.a++;
+                    this.rerender();
+                }
+            }>++</button>
+            {/* {this.children} */}
         </div>
     }
 }
