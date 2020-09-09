@@ -1,18 +1,43 @@
+
+const RENDER_TO_DOM = Symbol('render to dom');
+
+
 class ElementWrapper {
     constructor(type) {
         this.root = document.createElement(type);
     }
     setAttribute(name, value) {
-        this.root.setAttribute(name, value);
+        if (name.match(/^on([\s\S]+)$/)) {
+            this.root.addEventListener(RegExp.$1.replace(/^[\s\S]/, c => c.toLocaleLowerCase()), value);
+        } else {
+            if (name === 'className') {
+                this.root.setAttribute('class', value);
+            }
+            else {
+                this.root.setAttribute(name, value);
+            }
+        }
     }
     appendChild(component) {
-        this.root.appendChild(component.root);
+        // this.root.appendChild(component.root);
+        let range = document.createRange();
+        range.setStart(this.root, this.root.childNodes.length);
+        range.setEnd(this.root, this.root.childNodes.length);
+        component[RENDER_TO_DOM](range);
+    }
+    [RENDER_TO_DOM](range) {
+        range.deleteContents();
+        range.insertNode(this.root);
     }
 }
 
 class TextWrapper {
     constructor(content) {
         this.root = document.createTextNode(content);
+    }
+    [RENDER_TO_DOM](range) {
+        range.deleteContents();
+        range.insertNode(this.root);
     }
     // appendChild() {}
 }
@@ -29,15 +54,15 @@ export class Component {
     appendChild(component) {
         this.children.push(component);
     }
-
-    get root() {
-        // console.log(this._root);
-        if (!this._root) {
-            this._root = this.render().root;
-        }
-        // console.log(this._root);
-        return this._root;
+    [RENDER_TO_DOM](range) {
+        this.render()[RENDER_TO_DOM](range);
     }
+    // get root() {
+    //     if (!this._root) {
+    //         this._root = this.render().root;
+    //     }
+    //     return this._root;
+    // }
 }
 
 export function createElement(type, attributes, ...children) {
@@ -67,11 +92,16 @@ export function createElement(type, attributes, ...children) {
                 e.appendChild(child);
             }
         }
-    }
+    };
     insertChildren(children);
     return e;
 }
 
 export function render(component, parentNode) {
-    parentNode.appendChild(component.root);
+    // parentNode.appendChild(component.root);
+    let range = document.createRange();
+    range.setStart(parentNode, 0);
+    range.setEnd(parentNode, parentNode.childNodes.length);
+    range.deleteContents();
+    component[RENDER_TO_DOM](range);
 }
