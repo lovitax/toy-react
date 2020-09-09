@@ -69,6 +69,26 @@ export class Component {
     //     }
     //     return this._root;
     // }
+    setState(newState) {
+        if (this.state === null || typeof this.state !== 'object') {
+            this.state = newState;
+            this.rerender();
+            return;
+        }
+        let merge = (oldState, newState) => {
+            for (const key in newState) {
+                if (oldState[key] === null || typeof oldState[key] !== 'object') {
+                    oldState[key] = newState[key];
+                }
+                else {
+                    merge(oldState[key], newState[key]);
+                }
+            }
+        }
+
+        merge(this.state, newState);
+        this.rerender();
+    }
 }
 
 export function createElement(type, attributes, ...children) {

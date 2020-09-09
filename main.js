@@ -15,8 +15,11 @@ class MyComponent extends Component {
             {this.state.a.toString()} {/* 这里要是不toString就会有问题，因为render 其实只处理了数组和字符串*/}
             <button onclick={
                 () => {
-                    this.state.a++;
-                    this.rerender();
+                    // this.state.a++;
+                    // this.rerender();
+                    this.setState({
+                        a: this.state.a + 1
+                    })
                 }
             }>++</button>
             {/* {this.children} */}
